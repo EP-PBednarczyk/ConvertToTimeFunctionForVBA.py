@@ -1,32 +1,25 @@
 import string
-import openpyxl
 import pandas as pd  # to the exce
-import xlrd
 # windowmessage
 import ctypes  # An included library with Python install.
 import warnings
-
-# openpyxl or XlsxWriter to write to .xlsx files
+import openpyxl
+# openpyxl or XlsxWriter to write to .xlsx files, ibrary to the excel - GNU license
 # https://openpyxl.readthedocs.io/en/stable/
-import openpyxl  # library to the excel - GNU license
-
-# import warnings
 # from openpyxl import *  # library to the excel - GNU license
 # from openpyxl import Workbook, load_workbook  # library to the excel - GNU license
 
-
 # to the test
 # _input_included_time_wrong_symbol = ["abc#@!?efg;:*$**?***08:00:00"]  # test
-# wb = load_workbook('czas_pracy_1.3.24_Pawel_Bednarczyk_IV_2023_04-04.xlsm', keep_vba=True)
+# wb = load_workbook('czas_pracy_1.4.28_Pawel_Bednarczyk_IV_2023_04-28.xlsm', keep_vba=True)
 # ws = wb.active
 # warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 # file_name = 'czas_pracy_1.4.12_Pawel_Bednarczyk_IV_2023_04-14.xlsm'
 
-
 # @ToDo - Excel musi byc zamkniety???
 try:
     # load xls file ->from pandass
-    k = pd.read_excel(r'czas_pracy_1.4.12_Pawel_Bednarczyk_IV_2023_04-26.xlsm', index_col=0, sheet_name=None)
+    k = pd.read_excel(r'czas_pracy_1.4.28_Pawel_Bednarczyk_IV_2023_04-28.xlsm', index_col=0, sheet_name=None)
     # from openpyxl
     # d = openpyxl.load_workbook(file_name, data_only = True ,read_only = False, keep_vba = True)
     warnings.simplefilter(action='ignore')  # ignore warnings
@@ -37,7 +30,6 @@ except FileNotFoundError:
 # result: [19 rows x 38 columns]
 # k.get("Unnamed: 1")[0]
 # result: 'Czas pracy 1.4.12'
-
 
 # data matrix from excel (read celles where exist date):
 # [19 rows x 38 columns] in excel: from 2 to 20 row ; columns B:AL
@@ -189,7 +181,8 @@ except FileNotFoundError:
 #        [nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan],
-#        ['*VBA script was written based on framework from book:"Excel z elementami VBA w firmie" - Sergiusz Flanczewski.',
+#        ['*VBA script was written based on framework from book:
+#        "Excel z elementami VBA w firmie" - Sergiusz Flanczewski.',
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan],
@@ -202,10 +195,9 @@ except FileNotFoundError:
 # 'Czas pracy 1.4.12'
 # kk.get('April_2023').values[9][2]  -> (Excel D11)
 # results: datetime.time(8, 0)  -> w excvelku 08:00:00
-_input_included_time_wrong_symbol = k.get('April_2023').values[10][13]  # (excel O 12)
 # _input_included_time_wrong_symbol   ->  '**00:00:00'
 
-
+_input_included_time_wrong_symbol = k.get('April_2023').values[10][13]  # (excel O 12)
 print(_input_included_time_wrong_symbol)
 
 
@@ -214,7 +206,6 @@ def convert_to_time(_input_included_time_wrong_symbol):
     # remove chars(words) from times
     # string_with_time.remove()  # remove chars(words) from times
     # string_with_time = string_with_time.translate({ord(c): None for c in '***'})
-
     # ASCII: 33 to 47 - !,.../
     str_lower_word = list(string.ascii_lowercase)
     str_upper_word = list(string.ascii_uppercase)
@@ -232,8 +223,7 @@ def convert_to_time(_input_included_time_wrong_symbol):
 
     # -----------------to the debug ---------------------------------------
     # windowd message
-    ctypes.windll.user32.MessageBoxW(0, "Your text  " + k, "Your title", 1)
-
+    ctypes.windll.user32.MessageBoxW(0, "Your text from cell " + _input_included_time_wrong_symbol, "Your title", 1)
     # -------------------------------------------------------------------
 
     return
