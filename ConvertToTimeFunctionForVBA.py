@@ -1,10 +1,12 @@
 import string
+import sys
 import pandas as pd  # to the exce
-# windowmessage
 import ctypes  # An included library with Python install.
 import warnings
 import openpyxl
-# openpyxl or XlsxWriter to write to .xlsx files, ibrary to the excel - GNU license
+import xlsxwriter
+
+# openpyxl or XlsxWriter to write to .xlsx files, library to the excel - GNU license
 # https://openpyxl.readthedocs.io/en/stable/
 # from openpyxl import *  # library to the excel - GNU license
 # from openpyxl import Workbook, load_workbook  # library to the excel - GNU license
@@ -16,30 +18,30 @@ import openpyxl
 # warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 # file_name = 'czas_pracy_1.4.12_Pawel_Bednarczyk_IV_2023_04-14.xlsm'
 
-# @ToDo - Excel musi byc zamkniety???
 try:
-    # load xls file ->from pandass
-    k = pd.read_excel(r'czas_pracy_1.4.28_Pawel_Bednarczyk_IV_2023_04-28.xlsm', index_col=0, sheet_name=None)
+    # load xls file ->from pandas
+    data = pd.read_excel(r'czas_pracy_1.4.28_Pawel_Bednarczyk.xlsm', index_col=0, sheet_name=None)
+    print(data)
     # from openpyxl
     # d = openpyxl.load_workbook(file_name, data_only = True ,read_only = False, keep_vba = True)
     warnings.simplefilter(action='ignore')  # ignore warnings
 except FileNotFoundError:
     print("File could not be found.")
 # ----------------------
-# k
+# data
 # result: [19 rows x 38 columns]
-# k.get("Unnamed: 1")[0]
+# data.get("Unnamed: 1")[0]
 # result: 'Czas pracy 1.4.12'
 
 # data matrix from excel (read celles where exist date):
 # [19 rows x 38 columns] in excel: from 2 to 20 row ; columns B:AL
 
-# >>> k.keys(),
-# reuslts: dict_keys(['April_2023'])
+# >>> data.keys(),
+# result: dict_keys(['April_2023'])
 # ----------------------------------
-# kk
+# data [2]
 # results: matrix ... [19 rows x 37 columns]}
-# kk.get('April_2023').values
+# data.get('April_2023').values
 # results:
 # array([['Czas pracy 1.4.12', nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
@@ -189,24 +191,30 @@ except FileNotFoundError:
 #        ['mailto:pbednarczyk@energopomiar.com', nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
 #         nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan, nan,
-#         nan, nan, nan, nan, nan]], dtype=object)
-
+#         nan, nan, nan, nan, nan]], type=object)
 # kk.get('April_2023').values[0][0]   -> (Excel B2)
 # 'Czas pracy 1.4.12'
 # kk.get('April_2023').values[9][2]  -> (Excel D11)
-# results: datetime.time(8, 0)  -> w excvelku 08:00:00
+# results: datetime.time(8, 0)  -> w Excelu 08:00:00
 # _input_included_time_wrong_symbol   ->  '**00:00:00'
 
-_input_included_time_wrong_symbol = k.get('April_2023').values[10][13]  # (excel O 12)
+# -----------------window text for the print and test-------
+_input_included_time_wrong_symbol = data.get('May_2023').values[10][13]  # (excel cell O12 'O' as Ola)
 print(_input_included_time_wrong_symbol)
 
+ctypes.windll.user32.MessageBoxW(0, "Your text ", "Your title", 1)
+
+
+# --------------------------------------------------------
 
 def convert_to_time(_input_included_time_wrong_symbol):
+
     # convert string to Time 00:00:00 [hours:minutes:seconds]'
     # remove chars(words) from times
-    # string_with_time.remove()  # remove chars(words) from times
+    # string_with_time.remove() -> remove chars(words) from times
     # string_with_time = string_with_time.translate({ord(c): None for c in '***'})
     # ASCII: 33 to 47 - !,.../
+
     str_lower_word = list(string.ascii_lowercase)
     str_upper_word = list(string.ascii_uppercase)
 
@@ -216,20 +224,83 @@ def convert_to_time(_input_included_time_wrong_symbol):
                               '_', '=', '[', ']', '{' '}', ';', "'",
                               '"', '\\', '|', '<', '>', ',', '.',
                               '/', '?', '|', '`', '~'] + str_lower_word + str_upper_word
-    #  unecessary marks going to remove
-    _fixed_string: str = ''.join(c for c in _input_included_time_wrong_symbol[0] if c not in _prohibited_characters)
+    #  unnecessary marks going to remove
+    _fixed_string: str = ''.join(c for c in _input_included_time_wrong_symbol if c not in _prohibited_characters)
 
     # wsadzenie z powrotem do excela
 
     # -----------------to the debug ---------------------------------------
-    # windowd message
-    ctypes.windll.user32.MessageBoxW(0, "Your text from cell " + _input_included_time_wrong_symbol, "Your title", 1)
+    # window message with button
+    ctypes.windll.user32.MessageBoxW(0, "Your text from cell " + _input_included_time_wrong_symbol +
+                                     "... after remove unnecessary signs: " + _fixed_string
+                                     , "Your title", 1)
     # -------------------------------------------------------------------
 
-    return
-# @Tod - jak nadpisac excela z poprawionymi danymi??
-# k.DataFrame(_fixed_string)
+    # cell print in python. From pandas object   <- this cells I wpuld like to update
+    ###################################################
+    # example -> write update Excel
+    # https: // stackoverflow.com / questions / 47891444 / how - can - i - update - my - dataframe - in -pandas - and -export - out - to - excel
+    ##################################################################
+    #   import pandas as pd
+    # df = pd.read_excel(my_file, sheet_name='Sheet1')
+    #
+    #   dept = df['department']
+    #   resource = df['resource']
+    #   start_appointment = df['start appointment']
+    #
+    #   def diagnostic():  # Check Diagnostic Breast scheduled appointments
+    #       for i in range(10):
+    #           minutes = str(start_appointment[i])[14:16]
+    #           hour = str(start_appointment[i])[11:13]
+    #           if minutes == '15' and (
+    #                   hour == '8' or hour == '9' or hour == '10' or hour == '11'
+    #             or hour == '13' or hour == '14' or hour == '15') and (
+    #             resource[i] == 'BIDAG1' or resource[i] == 'BDIAG2' or
+    #             resource[i] == 'BDIAG3'):
+    #         df.update['resource'][i] = 'ZBMDX3'
+    #     elif minutes == '00' and (hour == '8' or hour == '9' or hour == '10' or
+    #             hour == '11' or hour == '13' or hour == '14' or hour == '15')
+    #             and (resource[i] == 'BIDAG1' or resource[i] == 'BDIAG2' or
+    #             resource[i] == 'BDIAG2'):
+    #         df.update['resource'][i] = 'ZBMDX2'
+    #     elif minutes == '45' and (
+    #             hour == '7' or hour == '8' or hour == '9' or hour == '10' or
+    #             hour == '12' or hour == '13' or hour == '14') and (
+    #             resource[i] == 'BIDAG1' or resource[i] == 'BDIAG2' or
+    #             resource[i] == 'BDIAG1'):
+    #         df.update['resource'][i] = 'ZBMDX1'
+    #     elif minutes == '30' and (hour == '8' or hour == '9' or hour == '10' or
+    #             hour == '13' or hour == '14') and (
+    #             resource[i] == 'BIDAG1' or resource[i] == 'BDIAG2' or
+    #             resource[i] == 'BDIAG1'):
+    #         df.update['resource'][i] = 'ZBMDX4'
+    #   diagnostic()
+    #
+    # # Specify a writer
+    # writer = pd.ExcelWriter('C:\\Users\user_name\Desktop\Python 3\Python_Output.xlsx', engine='xlsxwriter')
+    #
+    # # Write your DataFrame to a file
+    # df.to_excel(writer, 'Sheet1')
+    #
+    # # Save the result
+    # writer.save()
+    #---------------------------------------------------------------------------------------
 
+
+    print(list(data['May_2023']['Unnamed: 14'])[
+        10])
+    wrong_data = list(data['May_2023']['Unnamed: 14'])[
+        10]  # print  komórka O12 to N(14)liczone od kolumny B(1), wiersze liczone od 3 początek tabeli a indeksowanie w pythonie zaczyna się od 0) *00:00:00
+    # '**00:00:00'
+    list(data.update['May_2023']['Unnamed: 14'])[10] = _fixed_string
+
+    return
+
+
+
+
+input("hit any key to close")
+sys.exit()
 # ------------------------????????--ToDo---------------------
 # ToDo issue when case ":" ":08:00:00    08:00:00:, 08:0:0:0:0 etc"
 # if c == ":"
