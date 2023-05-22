@@ -55,6 +55,7 @@ for i in range(3, 34):
 
     #list_data = date.split("/")
     #print(list_data)
+
     ## results:
     ## error  File "<input>", line 6, in <module>
     ## AttributeError: 'datetime.datetime' object has no attribute 'split'
