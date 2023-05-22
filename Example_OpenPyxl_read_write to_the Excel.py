@@ -19,7 +19,6 @@ for i in range(3, 34):
     # print(cell)
     date = sheet[cell].value
     print(date)
-
     # results:
     # 2023-05-01 00:00:00
     # 2023-05-02 00:00:00
