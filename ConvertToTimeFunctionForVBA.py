@@ -3,7 +3,7 @@ import sys
 import pandas as pd  # to the exce
 import ctypes  # An included library with Python install.
 import warnings
-import openpyxl
+import openpyxl   # example-> how to use: https://www.youtube.com/watch?v=gY5oQIBjIg8 'How to change Date Formats in Excel using Python | From any Format to any other'
 import xlsxwriter
 
 # openpyxl or XlsxWriter to write to .xlsx files, library to the excel - GNU license
@@ -287,10 +287,9 @@ def convert_to_time(_input_included_time_wrong_symbol):
     #---------------------------------------------------------------------------------------
 
 
-    print(list(data['May_2023']['Unnamed: 14'])[
-        10])
+    print(list(data['May_2023']['Unnamed: 14'])[10])
     wrong_data = list(data['May_2023']['Unnamed: 14'])[
-        10]  # print  komórka O12 to N(14)liczone od kolumny B(1), wiersze liczone od 3 początek tabeli a indeksowanie w pythonie zaczyna się od 0) *00:00:00
+        10]  # print  komórka O12 to N(14) liczone od kolumny B(1), wiersze liczone od 3 początek tabeli a indeksowanie w pythonie zaczyna się od 0) *00:00:00
     # '**00:00:00'
     list(data.update['May_2023']['Unnamed: 14'])[10] = _fixed_string
 
