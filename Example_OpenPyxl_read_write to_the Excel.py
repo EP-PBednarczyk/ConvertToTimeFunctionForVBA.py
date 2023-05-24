@@ -2,6 +2,7 @@
 #  https://www.youtube.com/watch?v=gY5oQIBjIg8 'How to change Date 
 #  Formats in Excel using Python | From any Format to any other
 #  'czas_pracy_1.4.28_Pawel_Bednarczyk.xlsm' file excel
+# ------------- nie dziala ????????
 
 import openpyxl as _opPyxl
 
