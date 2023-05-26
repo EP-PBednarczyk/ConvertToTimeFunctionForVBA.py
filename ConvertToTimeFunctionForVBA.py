@@ -1,10 +1,10 @@
 import string
 import sys
-import pandas as pd  # to the exce
+import pandas as pd  # to the excel
 import ctypes  # An included library with Python install.
 import warnings
-import openpyxl   # example-> how to use: https://www.youtube.com/watch?v=gY5oQIBjIg8 'How to change Date Formats in Excel using Python | From any Format to any other'
-import xlsxwriter
+import openpyxl    # example-> how to use: https://www.youtube.com/watch?v=gY5oQIBjIg8 'How to change Date Formats in Excel using Python | From any Format to any other'
+
 
 # openpyxl or XlsxWriter to write to .xlsx files, library to the excel - GNU license
 # https://openpyxl.readthedocs.io/en/stable/
